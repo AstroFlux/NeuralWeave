@@ -165,7 +165,7 @@
 
 </div>
 <script>
-  const KEY = 'YOUR_API_KEY_HERE';
+  const KEY = 'YOUR_MISTRAL_API_KEY_HERE';
 
   const feed = document.getElementById('messages');
   const inp  = document.getElementById('inp');
@@ -222,19 +222,18 @@
     showTyping();
 
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': KEY,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
+          'Authorization': 'Bearer ' + KEY
         },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1024,
-          system: 'You are NeuralWeave, an advanced AI assistant built by AstroFlux. Be precise, insightful, and professional with a subtle futuristic tone.',
-          messages: log
+          model: 'mistral-large-latest',
+          messages: [
+            { role: 'system', content: 'You are NeuralWeave, an advanced AI assistant built by AstroFlux. Be precise, insightful, and professional with a subtle futuristic tone.' },
+            ...log
+          ]
         })
       });
       const data = await res.json();
@@ -243,7 +242,7 @@
         addMsg('ai', '⚠ ' + data.error.message);
         log.pop();
       } else {
-        const reply = data.content.map(b => b.text || '').join('');
+        const reply = data.choices[0].message.content;
         addMsg('ai', reply);
         log.push({ role: 'assistant', content: reply });
       }
