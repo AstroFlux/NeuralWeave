@@ -92,7 +92,6 @@
     .msg.ai   .bub { background: var(--surface); border: 1px solid var(--border); border-radius: 3px 10px 10px 10px; position: relative; }
     .msg.user .bub { background: #0b0b0b; border: 1px solid var(--border); color: #ccc; border-radius: 10px 3px 10px 10px; }
 
-    /* Markdown Styles */
     .bub pre { background: #050505; padding: 10px; border-radius: 6px; border: 1px solid var(--border); overflow-x: auto; margin: 8px 0; font-size: 0.75rem;}
     .bub code { background: #111; padding: 2px 4px; border-radius: 4px; font-family: monospace; font-size: 0.8rem;}
     .bub pre code { background: none; padding: 0; }
@@ -162,7 +161,6 @@
     
     <div class="controls">
       <div class="status"><div class="dot"></div><span>ONLINE</span></div>
-      
       <button class="icon-btn" id="clear-btn" title="Clear Chat">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -189,7 +187,7 @@
 
 <script>
   // ==========================================
-  // PASTE YOUR GROQ API KEY HERE:
+  // REPLACE THE TEXT BELOW INSIDE QUOTES WITH YOUR GSK_ KEY:
   const apiKey = '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';
   // ==========================================
 
@@ -200,21 +198,19 @@
   const inp  = document.getElementById('inp');
   const btn  = document.getElementById('btn');
 
-  // Basic Markdown Parser
   function parseMarkdown(text) {
     let html = text
-      .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>') // Code blocks
-      .replace(/`([^`]+)`/g, '<code>$1</code>')                   // Inline code
-      .replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>')        // Bold
-      .replace(/\*([^\*]+)\*/g, '<em>$1</em>')                    // Italic
-      .replace(/\n\n/g, '</p><p>')                                // Double newline
-      .replace(/\n/g, '<br>');                                    // Single newline
+      .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\*\*([^\*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*([^\*]+)\*/g, '<em>$1</em>')
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/\n/g, '<br>');
     return `<p>${html}</p>`;
   }
 
   function initChat() {
     feed.innerHTML = '';
-    
     if (log.length === 0) {
       renderMessage('ai', "NeuralWeave initialized via Groq infrastructure.\n\nSystems are online and ready. How can I assist you today?", false);
     } else {
@@ -239,7 +235,6 @@
       b.textContent = text; 
     } else {
       b.innerHTML = parseMarkdown(text);
-      
       const copyBtn = document.createElement('button');
       copyBtn.className = 'copy-btn';
       copyBtn.title = 'Copy text';
@@ -282,11 +277,6 @@
   async function send() {
     const text = inp.value.trim();
     if (!text) return;
-    
-    if (apiKey === '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') {
-      alert("Please edit the HTML file and insert your Groq API key on line 160.");
-      return;
-    }
 
     inp.value = ''; 
     inp.style.height = 'auto';
@@ -318,7 +308,7 @@
       hideTyping();
       
       if (!res.ok || !data.choices?.[0]) {
-        renderMessage('ai', '⚠ Error: ' + (data.error?.message || 'Connection failed.'), false);
+        renderMessage('ai', '⚠ Error: ' + (data.error?.message || 'Connection failed. Check API key.'), false);
         log.pop();
         localStorage.setItem(STORAGE_KEY, JSON.stringify(log));
       } else {
@@ -335,7 +325,6 @@
     inp.focus();
   }
 
-  // Event Listeners
   inp.addEventListener('input', () => {
     inp.style.height = 'auto';
     inp.style.height = Math.min(inp.scrollHeight, 120) + 'px';
@@ -355,7 +344,6 @@
     }
   });
 
-  // Init
   initChat();
 </script>
 </body>
