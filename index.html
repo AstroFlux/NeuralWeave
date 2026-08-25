@@ -187,8 +187,8 @@
 
 <script>
   // ==========================================
-  // REPLACE THE TEXT BELOW INSIDE QUOTES WITH YOUR GSK_ KEY:
-  const apiKey = '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';
+  // PASTE YOUR GROQ API KEY INSIDE THE QUOTES:
+  const apiKey = 'PASTE_YOUR_GROQ_KEY_HERE';
   // ==========================================
 
   const STORAGE_KEY = 'astroflux_groq_history';
@@ -298,7 +298,7 @@
           'Authorization': 'Bearer ' + apiKey
         },
         body: JSON.stringify({
-          model: 'llama-3.1-8b-instant',
+          model: 'openai/gpt-oss-20b',
           messages: apiMessages,
           temperature: 0.7
         })
