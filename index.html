@@ -8,7 +8,6 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* --- THEME PALETTES --- */
     :root[data-theme="original"] {
       --bg:      #000;
       --surface: #080808;
@@ -19,7 +18,6 @@
       --sub:     #303030;
       --dot:     #00ff66;
     }
-
     :root[data-theme="cyberpunk"] {
       --bg:      #05050a;
       --surface: #0e0e1a;
@@ -30,7 +28,6 @@
       --sub:     #ff005544;
       --dot:     #ff0055;
     }
-
     :root[data-theme="emerald"] {
       --bg:      #020804;
       --surface: #06140a;
@@ -41,7 +38,6 @@
       --sub:     #00ff6633;
       --dot:     #00ff66;
     }
-
     :root[data-theme="solar"] {
       --bg:      #0a0602;
       --surface: #140d06;
@@ -52,7 +48,6 @@
       --sub:     #ffaa0033;
       --dot:     #ffaa00;
     }
-
     :root[data-theme="ocean"] {
       --bg:      #020408;
       --surface: #060c14;
@@ -70,7 +65,7 @@
       display: grid;
       grid-template-rows: auto 1fr auto;
       height: 100vh;
-      max-width: 740px;
+      max-width: 780px;
       margin: 0 auto;
       padding: 0 20px;
       position: relative;
@@ -83,11 +78,9 @@
     }
 
     .logo-group { display: flex; align-items: center; gap: 12px; }
-
     .logo-mark {
       width: 34px; height: 34px; border-radius: 6px;
-      border: 1px solid var(--dim);
-      display: grid; place-items: center;
+      border: 1px solid var(--dim); display: grid; place-items: center;
     }
     .logo-mark svg { width: 18px; height: 18px; stroke: var(--text); }
 
@@ -96,7 +89,6 @@
     .brand-ai  { font-size: 1.08rem; font-weight: 800; color: var(--text); letter-spacing: -.02em; line-height: 1.1; }
 
     .controls { display: flex; gap: 10px; align-items: center; }
-    
     .theme-select {
       background: var(--surface); border: 1px solid var(--border); color: var(--muted);
       font-family: 'DM Mono', monospace; font-size: .65rem; padding: 5px 8px;
@@ -139,17 +131,33 @@
     .av.usr { color: var(--muted); }
 
     .bub {
-      max-width: 80%; padding: 11px 14px; border-radius: 10px;
+      max-width: 85%; padding: 12px 16px; border-radius: 10px;
       font-size: .85rem; line-height: 1.6; word-wrap: break-word;
     }
     .msg.ai   .bub { background: var(--surface); border: 1px solid var(--border); border-radius: 3px 10px 10px 10px; position: relative; }
-    .msg.user .bub { background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 10px 3px 10px 10px; opacity: 0.9; }
+    .msg.user .bub { background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 10px 3px 10px 10px; opacity: 0.95; }
 
     .bub pre { background: var(--bg); padding: 10px; border-radius: 6px; border: 1px solid var(--border); overflow-x: auto; margin: 8px 0; font-size: 0.75rem;}
     .bub code { background: var(--bg); padding: 2px 4px; border-radius: 4px; font-family: monospace; font-size: 0.8rem;}
     .bub pre code { background: none; padding: 0; }
     .bub p { margin-bottom: 8px; }
     .bub p:last-child { margin-bottom: 0; }
+
+    /* Attached image display inside chat */
+    .chat-img { max-width: 200px; max-height: 200px; border-radius: 6px; border: 1px solid var(--border); margin-bottom: 8px; display: block; object-fit: cover; }
+
+    /* Interactive Quiz Styling */
+    .quiz-container { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin: 10px 0; }
+    .quiz-question { font-weight: bold; margin-bottom: 10px; color: var(--text); font-size: .9rem; }
+    .quiz-options { display: flex; flex-direction: column; gap: 6px; }
+    .quiz-opt-btn {
+      background: var(--surface); border: 1px solid var(--border); color: var(--text);
+      padding: 8px 12px; border-radius: 6px; text-align: left; cursor: pointer;
+      font-family: 'DM Mono', monospace; font-size: .8rem; transition: all 0.2s;
+    }
+    .quiz-opt-btn:hover:not(:disabled) { border-color: var(--dim); background: var(--border); }
+    .quiz-opt-btn.correct { background: rgba(0, 255, 102, 0.15) !important; border-color: #00ff66 !important; color: #00ff66 !important; }
+    .quiz-opt-btn.incorrect { background: rgba(255, 0, 85, 0.15) !important; border-color: #ff0055 !important; color: #ff0055 !important; }
 
     .copy-btn {
       position: absolute; top: 8px; right: 8px; background: var(--bg); border: 1px solid var(--border);
@@ -170,7 +178,17 @@
     @keyframes blink { 0%,80%,100% { opacity: .12; } 40% { opacity: .7; } }
 
     #bar { padding: 15px 0 26px; border-top: 1px solid var(--border); }
-    .row { display: flex; gap: 8px; }
+    
+    /* Attachment preview panel above text bar */
+    #attachment-preview {
+      display: none; align-items: center; gap: 8px; padding: 6px 10px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+      margin-bottom: 8px; font-size: .75rem; color: var(--muted);
+    }
+    #attachment-preview img { width: 32px; height: 32px; object-fit: cover; border-radius: 4px; }
+    #remove-attachment { background: none; border: none; color: #ff0055; cursor: pointer; font-weight: bold; margin-left: auto; }
+
+    .row { display: flex; gap: 8px; align-items: flex-end; }
 
     #inp {
       flex: 1; background: var(--surface); border: 1px solid var(--border);
@@ -182,15 +200,19 @@
     #inp:focus { border-color: var(--dim); }
     #inp::placeholder { color: var(--sub); }
 
-    #btn {
+    .action-btn {
       width: 44px; height: 44px; border-radius: 8px; flex-shrink: 0;
-      background: var(--surface); border: 1px solid var(--dim);
+      background: var(--surface); border: 1px solid var(--border);
       cursor: pointer; display: grid; place-items: center;
-      transition: border-color .15s, background .15s;
+      transition: border-color .15s, background .15s; color: var(--muted);
     }
+    .action-btn:hover { border-color: var(--dim); color: var(--text); }
+    .action-btn svg { width: 16px; height: 16px; stroke: currentColor; }
+
+    #btn { border-color: var(--dim); background: var(--surface); }
     #btn:hover:not(:disabled) { border-color: var(--text); }
     #btn:disabled { opacity: .2; cursor: not-allowed; }
-    #btn svg { width: 15px; height: 15px; stroke: var(--text); }
+    #btn svg { stroke: var(--text); }
 
     .foot { font-size: .6rem; color: var(--sub); margin-top: 9px; text-align: center; letter-spacing: .07em; }
   </style>
@@ -231,9 +253,18 @@
   <div id="messages"></div>
 
   <div id="bar">
+    <div id="attachment-preview">
+      <img id="preview-thumb" src="" alt="preview"/>
+      <span id="preview-name">File attached</span>
+      <button id="remove-attachment" title="Remove">×</button>
+    </div>
     <div class="row">
-      <textarea id="inp" rows="1" placeholder="Message NeuralWeave…"></textarea>
-      <button id="btn">
+      <input type="file" id="file-inp" style="display: none;" accept="image/*,.txt,.md,.js,.json,.html,.css"/>
+      <button class="action-btn" id="file-btn" title="Attach Image or File">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+      </button>
+      <textarea id="inp" rows="1" placeholder="Message NeuralWeave or ask for a quiz…"></textarea>
+      <button class="action-btn" id="btn">
         <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
         </svg>
@@ -254,12 +285,20 @@
   const THEME_KEY = 'astroflux_theme';
   let log = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
+  let attachedFile = null; // Stores file data (base64 or text)
+
   const feed = document.getElementById('messages');
   const inp  = document.getElementById('inp');
   const btn  = document.getElementById('btn');
+  const fileBtn = document.getElementById('file-btn');
+  const fileInp = document.getElementById('file-inp');
+  const preview = document.getElementById('attachment-preview');
+  const previewThumb = document.getElementById('preview-thumb');
+  const previewName = document.getElementById('preview-name');
+  const removeAttachment = document.getElementById('remove-attachment');
   const themeSelect = document.getElementById('theme-select');
 
-  // Handle Theme Switching
+  // Theme Management
   const savedTheme = localStorage.getItem(THEME_KEY) || 'original';
   document.documentElement.setAttribute('data-theme', savedTheme);
   themeSelect.value = savedTheme;
@@ -268,6 +307,40 @@
     const chosenTheme = e.target.value;
     document.documentElement.setAttribute('data-theme', chosenTheme);
     localStorage.setItem(THEME_KEY, chosenTheme);
+  });
+
+  // File Handling
+  fileBtn.addEventListener('click', () => fileInp.click());
+
+  fileInp.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    if (file.type.startsWith('image/')) {
+      reader.onload = (uploadEvent) => {
+        attachedFile = { type: 'image', data: uploadEvent.target.result, name: file.name };
+        previewThumb.src = uploadEvent.target.result;
+        previewThumb.style.display = 'block';
+        previewName.textContent = file.name;
+        preview.style.display = 'flex';
+      };
+      reader.readAsDataURL(file);
+    } else {
+      reader.onload = (uploadEvent) => {
+        attachedFile = { type: 'text', data: uploadEvent.target.result, name: file.name };
+        previewThumb.style.display = 'none';
+        previewName.textContent = '📄 ' + file.name;
+        preview.style.display = 'flex';
+      };
+      reader.readAsText(file);
+    }
+  });
+
+  removeAttachment.addEventListener('click', () => {
+    attachedFile = null;
+    fileInp.value = '';
+    preview.style.display = 'none';
   });
 
   function parseMarkdown(text) {
@@ -281,18 +354,71 @@
     return `<p>${html}</p>`;
   }
 
+  // Quiz Parser: Detects JSON quiz blocks or structured quiz text and renders interactive selectors
+  function renderQuizWidgets(container, text) {
+    // Look for JSON code blocks containing quiz formats
+    const jsonMatch = text.match(/```json([\s\S]*?)```/) || text.match(/```([\s\S]*?)```/);
+    if (!jsonMatch) {
+      container.innerHTML = parseMarkdown(text);
+      return;
+    }
+
+    try {
+      let parsed = JSON.parse(jsonMatch[1].trim());
+      if (!Array.isArray(parsed)) parsed = [parsed];
+
+      if (parsed[0] && parsed[0].question && parsed[0].options) {
+        container.innerHTML = parseMarkdown(text.replace(jsonMatch[0], '')); // render text outside block
+        
+        parsed.forEach((q, qIndex) => {
+          const quizDiv = document.createElement('div');
+          quizDiv.className = 'quiz-container';
+          
+          let optionsHtml = '';
+          q.options.forEach((opt, oIndex) => {
+            optionsHtml += `<button class="quiz-opt-btn" data-correct="${oIndex === q.correct}" onclick="handleQuizAnswer(this, ${q.correct}, ${oIndex})">${opt}</button>`;
+          });
+
+          quizDiv.innerHTML = `
+            <div class="quiz-question">Q${qIndex + 1}: ${q.question}</div>
+            <div class="quiz-options">${optionsHtml}</div>
+          `;
+          container.appendChild(quizDiv);
+        });
+        return;
+      }
+    } catch (e) {
+      // Fallback if not valid quiz JSON
+    }
+    container.innerHTML = parseMarkdown(text);
+  }
+
+  window.handleQuizAnswer = function(btnElement, correctIndex, chosenIndex) {
+    const parent = btnElement.parentElement;
+    const buttons = parent.querySelectorAll('.quiz-opt-btn');
+    
+    buttons.forEach((btn, idx) => {
+      btn.disabled = true;
+      if (idx === correctIndex) btn.classList.add('correct');
+      if (idx === chosenIndex && idx !== correctIndex) btn.classList.add('incorrect');
+    });
+  };
+
   function initChat() {
     feed.innerHTML = '';
     if (log.length === 0) {
-      renderMessage('ai', "NeuralWeave initialized via Groq infrastructure.\n\nSystems are online and ready. How can I assist you today?", false);
+      renderMessage('ai', "NeuralWeave initialized.\n\nTip: You can attach images/files, or prompt me to create interactive quizzes (e.g., 'Make a quiz about history')!", false);
     } else {
       log.forEach(msg => {
-        if (msg.role !== 'system') renderMessage(msg.role === 'user' ? 'user' : 'ai', msg.content, false);
+        if (msg.role !== 'system') {
+          let content = typeof msg.content === 'string' ? msg.content : msg.content.find(c => c.type === 'text')?.text || '';
+          renderMessage(msg.role === 'user' ? 'user' : 'ai', content, false, null);
+        }
       });
     }
   }
 
-  function renderMessage(role, text, save = true) {
+  function renderMessage(role, text, save = true, fileObj = null) {
     const w = document.createElement('div');
     w.className = 'msg ' + (role === 'user' ? 'user' : 'ai');
     
@@ -304,16 +430,24 @@
     b.className = 'bub';
     
     if (role === 'user') {
-      b.textContent = text; 
+      if (fileObj && fileObj.type === 'image') {
+        const img = document.createElement('img');
+        img.src = fileObj.data;
+        img.className = 'chat-img';
+        b.appendChild(img);
+      }
+      const txtSpan = document.createElement('span');
+      txtSpan.textContent = text;
+      b.appendChild(txtSpan);
     } else {
-      b.innerHTML = parseMarkdown(text);
+      renderQuizWidgets(b, text);
       const copyBtn = document.createElement('button');
       copyBtn.className = 'copy-btn';
       copyBtn.title = 'Copy text';
       copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
       copyBtn.onclick = () => {
         navigator.clipboard.writeText(text);
-        copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+        copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="#00ff66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
         setTimeout(() => {
           copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
         }, 2000);
@@ -347,19 +481,48 @@
   function hideTyping() { document.getElementById('typing')?.remove(); }
 
   async function send() {
-    const text = inp.value.trim();
-    if (!text) return;
+    let text = inp.value.trim();
+    if (!text && !attachedFile) return;
+
+    // If a text file was attached, append its content to the user message context
+    let fullPrompt = text;
+    if (attachedFile && attachedFile.type === 'text') {
+      fullPrompt += `\n\n[Attached File: ${attachedFile.name}]\n${attachedFile.data}`;
+    }
+
+    // Force system instruction to output JSON format when quiz is requested
+    let systemInstruction = 'You are NeuralWeave, an advanced AI assistant built by AstroFlux. When the user requests a quiz, format your response as a JSON code block like this: ```json[{"question": "...", "options": ["A", "B", "C", "D"], "correct": 0}]``` where correct is the index (0-3) of the right option.';
 
     inp.value = ''; 
     inp.style.height = 'auto';
     btn.disabled = true;
-    
-    renderMessage('user', text, true);
+
+    let currentFile = attachedFile;
+    renderMessage('user', text || `[Attached: ${currentFile.name}]`, true, currentFile);
+
+    // Reset attachments
+    attachedFile = null;
+    preview.style.display = 'none';
+    fileInp.value = '';
+
     showTyping();
 
+    // Prepare message payload supporting Vision (`qwen/qwen3.6-27b`) if an image is attached
+    let userContentPayload = fullPrompt;
+    let activeModel = 'openai/gpt-oss-20b';
+
+    if (currentFile && currentFile.type === 'image') {
+      activeModel = 'qwen/qwen3.6-27b'; // Groq vision model
+      userContentPayload = [
+        { type: 'text', text: fullPrompt || 'Analyze this image.' },
+        { type: 'image_url', image_url: { url: currentFile.data } }
+      ];
+    }
+
     const apiMessages = [
-      { role: 'system', content: 'You are NeuralWeave, an advanced AI assistant built by AstroFlux. Be precise, insightful, and professional with a subtle futuristic tone.' },
-      ...log
+      { role: 'system', content: systemInstruction },
+      ...log.slice(0, -1).map(m => ({ role: m.role, content: m.content })),
+      { role: 'user', content: userContentPayload }
     ];
 
     try {
@@ -370,7 +533,7 @@
           'Authorization': 'Bearer ' + apiKey
         },
         body: JSON.stringify({
-          model: 'openai/gpt-oss-20b',
+          model: activeModel,
           messages: apiMessages,
           temperature: 0.7
         })
@@ -384,7 +547,8 @@
         log.pop();
         localStorage.setItem(STORAGE_KEY, JSON.stringify(log));
       } else {
-        renderMessage('ai', data.choices[0].message.content, true);
+        const replyText = data.choices[0].message.content;
+        renderMessage('ai', replyText, true);
       }
     } catch (err) {
       hideTyping();
