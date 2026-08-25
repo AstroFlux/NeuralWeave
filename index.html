@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="original">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -8,7 +8,8 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
+    /* --- THEME PALETTES --- */
+    :root[data-theme="original"] {
       --bg:      #000;
       --surface: #080808;
       --border:  #1c1c1c;
@@ -16,10 +17,54 @@
       --muted:   #4a4a4a;
       --text:    #e6e6e6;
       --sub:     #303030;
-      --accent:  #5e5e5e;
+      --dot:     #00ff66;
     }
 
-    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; }
+    :root[data-theme="cyberpunk"] {
+      --bg:      #05050a;
+      --surface: #0e0e1a;
+      --border:  #ff005533;
+      --dim:     #ff005566;
+      --muted:   #8a8ab0;
+      --text:    #00ffff;
+      --sub:     #ff005544;
+      --dot:     #ff0055;
+    }
+
+    :root[data-theme="emerald"] {
+      --bg:      #020804;
+      --surface: #06140a;
+      --border:  #00ff6622;
+      --dim:     #00ff6655;
+      --muted:   #508060;
+      --text:    #e0f8e8;
+      --sub:     #00ff6633;
+      --dot:     #00ff66;
+    }
+
+    :root[data-theme="solar"] {
+      --bg:      #0a0602;
+      --surface: #140d06;
+      --border:  #ffaa0033;
+      --dim:     #ffaa0066;
+      --muted:   #907040;
+      --text:    #ffe8cc;
+      --sub:     #ffaa0033;
+      --dot:     #ffaa00;
+    }
+
+    :root[data-theme="ocean"] {
+      --bg:      #020408;
+      --surface: #060c14;
+      --border:  #0088ff33;
+      --dim:     #0088ff66;
+      --muted:   #407090;
+      --text:    #e0f0ff;
+      --sub:     #0088ff33;
+      --dot:     #00aaff;
+    }
+
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; transition: background 0.3s, color 0.3s; }
 
     #app {
       display: grid;
@@ -44,13 +89,21 @@
       border: 1px solid var(--dim);
       display: grid; place-items: center;
     }
-    .logo-mark svg { width: 18px; height: 18px; }
+    .logo-mark svg { width: 18px; height: 18px; stroke: var(--text); }
 
     .brand { font-family: 'Syne', sans-serif; }
     .brand-co  { font-size: .6rem; font-weight: 700; color: var(--muted); letter-spacing: .22em; text-transform: uppercase; }
     .brand-ai  { font-size: 1.08rem; font-weight: 800; color: var(--text); letter-spacing: -.02em; line-height: 1.1; }
 
-    .controls { display: flex; gap: 12px; align-items: center; }
+    .controls { display: flex; gap: 10px; align-items: center; }
+    
+    .theme-select {
+      background: var(--surface); border: 1px solid var(--border); color: var(--muted);
+      font-family: 'DM Mono', monospace; font-size: .65rem; padding: 5px 8px;
+      border-radius: 5px; outline: none; cursor: pointer; transition: border-color .2s, color .2s;
+    }
+    .theme-select:hover { border-color: var(--dim); color: var(--text); }
+
     .icon-btn {
       background: none; border: none; color: var(--muted); cursor: pointer;
       transition: color .2s; display: grid; place-items: center;
@@ -60,8 +113,8 @@
 
     .status { display: flex; align-items: center; gap: 6px; font-size: .64rem; color: var(--muted); letter-spacing: .08em; }
     .dot {
-      width: 6px; height: 6px; border-radius: 50%; background: #00ff66;
-      box-shadow: 0 0 8px #00ff66;
+      width: 6px; height: 6px; border-radius: 50%; background: var(--dot);
+      box-shadow: 0 0 8px var(--dot);
     }
 
     #messages {
@@ -90,10 +143,10 @@
       font-size: .85rem; line-height: 1.6; word-wrap: break-word;
     }
     .msg.ai   .bub { background: var(--surface); border: 1px solid var(--border); border-radius: 3px 10px 10px 10px; position: relative; }
-    .msg.user .bub { background: #0b0b0b; border: 1px solid var(--border); color: #ccc; border-radius: 10px 3px 10px 10px; }
+    .msg.user .bub { background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 10px 3px 10px 10px; opacity: 0.9; }
 
-    .bub pre { background: #050505; padding: 10px; border-radius: 6px; border: 1px solid var(--border); overflow-x: auto; margin: 8px 0; font-size: 0.75rem;}
-    .bub code { background: #111; padding: 2px 4px; border-radius: 4px; font-family: monospace; font-size: 0.8rem;}
+    .bub pre { background: var(--bg); padding: 10px; border-radius: 6px; border: 1px solid var(--border); overflow-x: auto; margin: 8px 0; font-size: 0.75rem;}
+    .bub code { background: var(--bg); padding: 2px 4px; border-radius: 4px; font-family: monospace; font-size: 0.8rem;}
     .bub pre code { background: none; padding: 0; }
     .bub p { margin-bottom: 8px; }
     .bub p:last-child { margin-bottom: 0; }
@@ -135,10 +188,9 @@
       cursor: pointer; display: grid; place-items: center;
       transition: border-color .15s, background .15s;
     }
-    #btn:hover:not(:disabled) { background: #111; border-color: #666; }
-    #btn:active:not(:disabled) { background: #0a0a0a; }
+    #btn:hover:not(:disabled) { border-color: var(--text); }
     #btn:disabled { opacity: .2; cursor: not-allowed; }
-    #btn svg { width: 15px; height: 15px; }
+    #btn svg { width: 15px; height: 15px; stroke: var(--text); }
 
     .foot { font-size: .6rem; color: var(--sub); margin-top: 9px; text-align: center; letter-spacing: .07em; }
   </style>
@@ -149,7 +201,7 @@
   <header>
     <div class="logo-group">
       <div class="logo-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#e6e6e6" stroke-width="1.5" stroke-linecap="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round">
           <path d="M12 2L2 7l10 5 10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
         </svg>
       </div>
@@ -160,6 +212,13 @@
     </div>
     
     <div class="controls">
+      <select id="theme-select" class="theme-select" title="Select Color Theme">
+        <option value="original">Original Dark</option>
+        <option value="cyberpunk">Cyberpunk Neon</option>
+        <option value="emerald">Emerald Matrix</option>
+        <option value="solar">Solar Flare</option>
+        <option value="ocean">Deep Ocean</option>
+      </select>
       <div class="status"><div class="dot"></div><span>ONLINE</span></div>
       <button class="icon-btn" id="clear-btn" title="Clear Chat">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -175,7 +234,7 @@
     <div class="row">
       <textarea id="inp" rows="1" placeholder="Message NeuralWeave…"></textarea>
       <button id="btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#e6e6e6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
         </svg>
       </button>
@@ -192,11 +251,24 @@
   // ==========================================
 
   const STORAGE_KEY = 'astroflux_groq_history';
+  const THEME_KEY = 'astroflux_theme';
   let log = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 
   const feed = document.getElementById('messages');
   const inp  = document.getElementById('inp');
   const btn  = document.getElementById('btn');
+  const themeSelect = document.getElementById('theme-select');
+
+  // Handle Theme Switching
+  const savedTheme = localStorage.getItem(THEME_KEY) || 'original';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  themeSelect.value = savedTheme;
+
+  themeSelect.addEventListener('change', (e) => {
+    const chosenTheme = e.target.value;
+    document.documentElement.setAttribute('data-theme', chosenTheme);
+    localStorage.setItem(THEME_KEY, chosenTheme);
+  });
 
   function parseMarkdown(text) {
     let html = text
@@ -241,7 +313,7 @@
       copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
       copyBtn.onclick = () => {
         navigator.clipboard.writeText(text);
-        copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="#00ff66" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+        copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
         setTimeout(() => {
           copyBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
         }, 2000);
